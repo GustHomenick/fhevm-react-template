@@ -1,6 +1,26 @@
-export * from "./core/index";
-export * from "./storage/index";
-export * from "./fhevmTypes";
-export * from "./FhevmDecryptionSignature";
-export * from "./react/index";
+/**
+ * Universal FHEVM SDK
+ * Framework-agnostic SDK for building confidential dApps with Fully Homomorphic Encryption
+ *
+ * @module @fhevm/sdk
+ */
 
+export * from './core';
+export * from './encryption';
+export * from './decryption';
+export * from './hooks';
+export * from './adapters';
+export * from './utils';
+export * from './types';
+
+// Re-export commonly used types
+export type {
+  FHEVMConfig,
+  EncryptedInput,
+  DecryptionResult,
+  ContractInstance,
+  Provider
+} from './types';
+
+// Version export
+export const VERSION = '1.0.0';
