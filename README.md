@@ -1,170 +1,643 @@
-# FHEVM React Template
+# Universal FHEVM SDK
 
-A minimal React frontend template for building FHEVM-enabled decentralized applications (dApps). This template provides a simple development interface for interacting with FHEVM smart contracts, specifically the `FHECounter.sol` contract.
+> A framework-agnostic SDK for building confidential applications with Fully Homomorphic Encryption
 
-## 🚀 What is FHEVM?
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Live Demo](https://img.shields.io/badge/demo-live-success)](https://fhe-art-investment.vercel.app/)
 
-FHEVM (Fully Homomorphic Encryption Virtual Machine) enables computation on encrypted data directly on Ethereum. This template demonstrates how to build dApps that can perform computations while keeping data private.
+## 🎯 Overview
 
-## ✨ Features
+This project provides a **universal, developer-friendly FHEVM SDK** that makes building confidential frontends simple, consistent, and intuitive across any JavaScript framework.
 
-- **🔐 FHEVM Integration**: Built-in support for fully homomorphic encryption
-- **⚛️ React + Next.js**: Modern, performant frontend framework
-- **🎨 Tailwind CSS**: Utility-first styling for rapid UI development
-- **🔗 RainbowKit**: Seamless wallet connection and management
-- **🌐 Multi-Network Support**: Works on both Sepolia testnet and local Hardhat node
-- **📦 Monorepo Structure**: Organized packages for SDK, contracts, and frontend
+### Key Features
 
-## 📋 Prerequinextjss
+- ✅ **Framework Agnostic** - Works with React, Vue, Next.js, Node.js, and vanilla JS
+- ✅ **Wagmi-like API** - Familiar hooks and patterns for Web3 developers
+- ✅ **< 10 Lines to Start** - Minimal setup, maximum productivity
+- ✅ **Type Safe** - Full TypeScript support
+- ✅ **Modular Architecture** - Import only what you need
+- ✅ **Production Ready** - Complete examples and documentation
 
-Before you begin, ensure you have:
+### Live Examples
 
-- **Node.js** (v18 or higher)
-- **pnpm** package manager
-- **MetaMask** browser extension
-- **Git** for cloning the repository
+🌐 **Live Demo**: [https://fhe-art-investment.vercel.app/](https://fhe-art-investment.vercel.app/)
 
-## 🛠️ Quick Start
+🔗 **GitHub Repository**: [https://github.com/GustHomenick/fhevm-react-template](https://github.com/GustHomenick/fhevm-react-template)
 
-### 1. Clone and Setup
+🎥 **Demo Video**: Download and watch `demo.mp4` from the repository (video cannot be viewed directly via link)
 
-```bash
-# Clone the repository
-git clone <repository-url>
-cd fhevm-react-template
+## 🚀 Quick Start
 
-# Initialize submodules (includes fhevm-hardhat-template)
-git submodule update --init --recursive
-
-# Install dependencies
-pnpm install
-```
-
-### 2. Environment Configuration
-
-Set up your Hardhat environment variables by following the [FHEVM documentation](https://docs.zama.ai/protocol/solidity-guides/getting-started/setup#set-up-the-hardhat-configuration-variables-optional):
-
-- `MNEMONIC`: Your wallet mnemonic phrase
-- `INFURA_API_KEY`: Your Infura API key for Sepolia
-
-### 3. Start Development Environment
-
-**Option A: Local Development (Recommended for testing)**
+### Installation
 
 ```bash
-# Terminal 1: Start local Hardhat node
-pnpm chain
-# RPC URL: http://127.0.0.1:8545 | Chain ID: 31337
+# Install from root
+npm install
 
-# Terminal 2: Deploy contracts to localhost
-pnpm deploy:localhost
-
-# Terminal 3: Start the frontend
-pnpm start
+# Or install SDK only
+cd packages/fhevm-sdk
+npm install
 ```
 
-**Option B: Sepolia Testnet**
+### Basic Usage (< 10 lines!)
 
-```bash
-# Deploy to Sepolia testnet
-pnpm deploy:sepolia
+```typescript
+import { createFHEVMClient, encryptValue } from '@fhevm/sdk';
 
-# Start the frontend
-pnpm start
+// Initialize
+const client = await createFHEVMClient({
+  chainId: 8009,
+  provider: 'https://devnet.zama.ai'
+});
+
+// Encrypt & use
+const encrypted = await encryptValue(client, 42, {
+  contractAddress: '0x...',
+  userAddress: '0x...'
+});
 ```
 
-### 4. Connect MetaMask
-
-1. Open [http://localhost:3000](http://localhost:3000) in your browser
-2. Click "Connect Wallet" and select MetaMask
-3. If using localhost, add the Hardhat network to MetaMask:
-   - **Network Name**: Hardhat Local
-   - **RPC URL**: `http://127.0.0.1:8545`
-   - **Chain ID**: `31337`
-   - **Currency Symbol**: `ETH`
-
-### ⚠️ Sepolia Production note
-
-- In production, `NEXT_PUBLIC_ALCHEMY_API_KEY` must be set (see `packages/nextjs/scaffold.config.ts`). The app throws if missing.
-- Ensure `packages/nextjs/contracts/deployedContracts.ts` points to your live contract addresses.
-- Optional: set `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID` for better WalletConnect reliability.
-- Optional: add per-chain RPCs via `rpcOverrides` in `packages/nextjs/scaffold.config.ts`.
-
-## 🔧 Troubleshooting
-
-### Common MetaMask + Hardhat Issues
-
-When developing with MetaMask and Hardhat, you may encounter these common issues:
-
-#### ❌ Nonce Mismatch Error
-
-**Problem**: MetaMask tracks transaction nonces, but when you restart Hardhat, the node resets while MetaMask doesn't update its tracking.
-
-**Solution**:
-1. Open MetaMask extension
-2. Select the Hardhat network
-3. Go to **Settings** → **Advanced**
-4. Click **"Clear Activity Tab"** (red button)
-5. This resets MetaMask's nonce tracking
-
-#### ❌ Cached View Function Results
-
-**Problem**: MetaMask caches smart contract view function results. After restarting Hardhat, you may see outdated data.
-
-**Solution**:
-1. **Restart your entire browser** (not just refresh the page)
-2. MetaMask's cache is stored in extension memory and requires a full browser restart to clear
-
-> 💡 **Pro Tip**: Always restart your browser after restarting Hardhat to avoid cache issues.
-
-For more details, see the [MetaMask development guide](https://docs.metamask.io/wallet/how-to/run-devnet/).
-
-## 📁 Project Structure
-
-This template uses a monorepo structure with three main packages:
+## 📦 Project Structure
 
 ```
 fhevm-react-template/
 ├── packages/
-│   ├── fhevm-hardhat-template/    # Smart contracts & deployment
-│   ├── fhevm-sdk/                 # FHEVM SDK package
-│   └── nextjs/                      # React frontend application
-└── scripts/                       # Build and deployment scripts
+│   └── fhevm-sdk/              # 🎯 Universal FHEVM SDK
+│       ├── src/
+│       │   ├── index.ts        # Main exports
+│       │   ├── core.ts         # Core client functionality
+│       │   ├── encryption.ts   # Encryption utilities
+│       │   ├── decryption.ts   # Decryption with EIP-712
+│       │   ├── hooks.ts        # React hooks (wagmi-like)
+│       │   ├── adapters.ts     # Framework adapters
+│       │   ├── utils.ts        # Helper functions (40+)
+│       │   └── types.ts        # TypeScript definitions
+│       ├── package.json
+│       └── README.md           # SDK documentation
+│
+├── examples/
+│   ├── nextjs-art-investment/  # 🎨 Next.js Example (Complete)
+│   │   ├── app/                # Next.js 14 App Router
+│   │   │   ├── layout.tsx      # Root layout
+│   │   │   ├── page.tsx        # Main page
+│   │   │   ├── providers.tsx   # Wagmi providers
+│   │   │   └── globals.css     # Global styles
+│   │   ├── components/         # React components
+│   │   │   ├── ArtworkList.tsx
+│   │   │   ├── InvestmentForm.tsx
+│   │   │   └── Portfolio.tsx
+│   │   ├── lib/                # Utilities
+│   │   │   └── contract.ts     # Contract ABI & address
+│   │   ├── contracts/          # Smart contracts
+│   │   │   └── PrivateArtInvestment.sol
+│   │   ├── hardhat.config.js
+│   │   ├── next.config.js
+│   │   └── package.json
+│   │
+│   ├── react-basic/            # ⚛️ React Example (Complete)
+│   │   ├── src/
+│   │   │   ├── App.tsx         # Main component
+│   │   │   ├── main.tsx        # Entry point
+│   │   │   └── index.css       # Styles
+│   │   ├── vite.config.ts
+│   │   └── package.json
+│   │
+│   ├── vue-app/                # 🎭 Vue Example (Complete)
+│   │   ├── src/
+│   │   │   ├── components/
+│   │   │   │   └── DemoSection.vue
+│   │   │   ├── App.vue         # Main app
+│   │   │   ├── main.ts         # Entry point
+│   │   │   └── style.css       # Styles
+│   │   ├── vite.config.ts
+│   │   └── package.json
+│   │
+│   └── nodejs-cli/             # 🖥️ Node.js CLI (Complete)
+│       ├── src/
+│       │   ├── commands/
+│       │   │   ├── encrypt.ts
+│       │   │   ├── decrypt.ts
+│       │   │   ├── info.ts
+│       │   │   └── interactive.ts
+│       │   └── index.ts        # CLI entry point
+│       ├── tsconfig.json
+│       └── package.json
+│
+├── demo.md                     # 📹 Video demonstration guide
+├── package.json                # Root package configuration
+├── README.md                   # This file
+├── SETUP.md                    # Complete setup guide
+├── SUBMISSION.md               # Competition submission details
+└── PROJECT-STATUS.md           # Project completion status
 ```
 
-### Key Components
+## 🎨 Next.js Art Investment Example
 
-#### 🔗 FHEVM Integration (`packages/nextjs/hooks/fhecounter-example/`)
-- **`useFHECounterWagmi.tsx`**: Example hook demonstrating FHEVM contract interaction
-- Essential hooks for FHEVM-enabled smart contract communication
-- Easily copyable to any FHEVM + React project
+A complete privacy-preserving art investment platform built with Next.js 14.
 
-#### 🎣 Wallet Management (`packages/nextjs/hooks/helper/`)
-- MetaMask wallet provider hooks
-- Compatible with EIP-6963 standard
-- Easily adaptable for other wallet providers
+**Location**: `examples/nextjs-art-investment/`
 
-#### 🔧 Flexibility
-- Replace `ethers.js` with `Wagmi` or other React-friendly libraries
-- Modular architecture for easy customization
-- Support for multiple wallet providers
+### Features
 
-## 📚 Additional Resources
+- 🎨 **Private Investments**: Investment amounts encrypted with FHE
+- 🔒 **Encrypted Portfolios**: Portfolio balances remain confidential
+- 🔑 **User Decryption**: EIP-712 signed decryption for authorized users
+- ⚡ **Next.js 14**: Modern App Router architecture
+- 🎯 **FHEVM SDK Integration**: Complete SDK usage demonstration
 
-### Official Documentation
-- [FHEVM Documentation](https://docs.zama.ai/protocol/solidity-guides/) - Complete FHEVM guide
-- [FHEVM Hardhat Guide](https://docs.zama.ai/protocol/solidity-guides/development-guide/hardhat) - Hardhat integration
-- [Relayer SDK Documentation](https://docs.zama.ai/protocol/relayer-sdk-guides/) - SDK reference
-- [Environment Setup](https://docs.zama.ai/protocol/solidity-guides/getting-started/setup#set-up-the-hardhat-configuration-variables-optional) - MNEMONIC & API keys
+### Run the Example
 
-### Development Tools
-- [MetaMask + Hardhat Setup](https://docs.metamask.io/wallet/how-to/run-devnet/) - Local development
-- [React Documentation](https://reactjs.org/) - React framework guide
+```bash
+cd examples/nextjs-art-investment
+npm install
+npm run dev
+```
 
-### Community & Support
-- [FHEVM Discord](https://discord.com/invite/zama) - Community support
-- [GitHub Issues](https://github.com/zama-ai/fhevm-react-template/issues) - Bug reports & feature requests
+### Smart Contract
+
+The example includes the **PrivateArtInvestment** smart contract:
+
+- Private investment amounts (FHE encrypted)
+- Encrypted portfolio tracking
+- User-specific decryption capabilities
+- Automated returns distribution
+- Full Hardhat development environment
+
+### Deploy Contract
+
+```bash
+cd examples/nextjs-art-investment
+npm run compile
+npm run deploy
+```
+
+**Live Demo**: [https://fhe-art-investment.vercel.app/](https://fhe-art-investment.vercel.app/)
+
+## 📱 React Basic Example
+
+Basic React application with FHEVM SDK integration.
+
+**Location**: `examples/react-basic/`
+
+### Features
+
+- ⚛️ **React 18**: Modern React with hooks
+- 🔗 **Wallet Integration**: ConnectKit for wallet connection
+- 🔒 **Encryption Demo**: Interactive encryption demonstration
+- ⚡ **Vite**: Fast development with HMR
+- 🎯 **FHEVM Hooks**: useFHEVM, useEncrypt, useDecrypt
+
+### Run the Example
+
+```bash
+cd examples/react-basic
+npm install
+npm run dev
+```
+
+## 🎭 Vue.js Example
+
+Vue 3 application with Composition API and FHEVM SDK.
+
+**Location**: `examples/vue-app/`
+
+### Features
+
+- 🌟 **Vue 3**: Composition API with TypeScript
+- 🔧 **Vue Adapter**: Custom Vue adapter for FHEVM
+- 💚 **Reactive State**: Vue reactive system integration
+- 🎨 **SFC**: Single File Components
+- ⚡ **Vite**: Lightning-fast development
+
+### Run the Example
+
+```bash
+cd examples/vue-app
+npm install
+npm run dev
+```
+
+## 🖥️ Node.js CLI Example
+
+Command-line interface for FHEVM operations.
+
+**Location**: `examples/nodejs-cli/`
+
+### Features
+
+- 🔨 **CLI Tool**: Full-featured command-line interface
+- 🎯 **Node Adapter**: Backend-focused FHEVM adapter
+- 🔄 **Interactive Mode**: Beautiful prompts with Inquirer
+- 📊 **Network Info**: Display network and configuration
+- 🎨 **Beautiful UI**: Ora spinners and formatted output
+
+### Run the Example
+
+```bash
+cd examples/nodejs-cli
+npm install
+npm run dev
+```
+
+### CLI Commands
+
+```bash
+# Interactive mode
+fhevm-cli interactive
+
+# Encrypt a value
+fhevm-cli encrypt --value 42 --contract 0x... --user 0x...
+
+# Decrypt a value
+fhevm-cli decrypt --handle 0x... --contract 0x... --private-key 0x...
+
+# Show network info
+fhevm-cli info
+```
+
+## 🛠️ SDK Architecture
+
+### Core Modules
+
+#### 1. Core Module (`core.ts`)
+
+Manages FHEVM client lifecycle and initialization:
+
+```typescript
+import { createFHEVMClient, FHEVMClient } from '@fhevm/sdk';
+
+const client = await createFHEVMClient({
+  chainId: 8009,
+  provider: 'https://devnet.zama.ai',
+  contractAddresses: {
+    ACL: '0x...',
+    TFHEExecutor: '0x...',
+    KMSVerifier: '0x...'
+  },
+  debug: true
+});
+
+const instance = client.getInstance();
+```
+
+**Key Classes**:
+- `FHEVMClient` - Main client class
+- `createFHEVMClient()` - Factory function
+- `getGlobalClient()` - Singleton pattern
+
+#### 2. Encryption Module (`encryption.ts`)
+
+Provides encryption utilities with fluent API:
+
+```typescript
+// Simple encryption
+const encrypted = await encryptValue(client, 100, {
+  contractAddress: '0x...',
+  userAddress: '0x...'
+});
+
+// Builder pattern for multiple values
+const encrypted = createInputBuilder(client, options)
+  .add64(100)
+  .addBool(true)
+  .add32(42)
+  .addAddress('0x...')
+  .encrypt();
+```
+
+**Available Functions**:
+- `encryptValue()` - Encrypt single value
+- `encryptBool()` - Encrypt boolean
+- `encryptArray()` - Encrypt multiple values
+- `createInputBuilder()` - Fluent builder API
+- `EncryptedInputBuilder` - Builder class
+
+#### 3. Decryption Module (`decryption.ts`)
+
+Handles both user and public decryption with EIP-712:
+
+```typescript
+// User decrypt (with EIP-712 signature)
+const result = await userDecrypt(client, handle, signer, contractAddress);
+
+// Public decrypt (no signature)
+const result = await publicDecrypt(client, handle, contractAddress);
+
+// Smart decrypt (automatic fallback)
+const result = await smartDecrypt(client, handle, contractAddress, signer);
+
+// Batch decryption
+const results = await batchUserDecrypt(client, handles, signer, contractAddress);
+```
+
+**Key Functions**:
+- `userDecrypt()` - User-specific decryption with signature
+- `publicDecrypt()` - Public decryption
+- `smartDecrypt()` - Auto-select best method
+- `batchUserDecrypt()` - Decrypt multiple values
+- `createDecryptionManager()` - Manager class
+
+#### 4. Hooks Module (`hooks.ts`)
+
+React hooks for seamless integration (wagmi-like):
+
+```typescript
+import { useFHEVM, useEncrypt, useDecrypt } from '@fhevm/sdk';
+
+function MyComponent() {
+  const { client, isReady, error } = useFHEVM(fhevmClient);
+
+  const { encrypt, isEncrypting } = useEncrypt(
+    client,
+    contractAddress,
+    userAddress
+  );
+
+  const { decrypt, isDecrypting } = useDecrypt(
+    client,
+    contractAddress,
+    signer
+  );
+
+  const { data, isLoading, refetch } = useEncryptedRead(
+    client,
+    contractAddress,
+    handle,
+    signer
+  );
+
+  // Use in your component
+}
+```
+
+**Available Hooks**:
+- `useFHEVM()` - Use FHEVM client
+- `useEncrypt()` - Encrypt values
+- `useDecrypt()` - Decrypt values
+- `useEncryptedRead()` - Read encrypted state
+- `useEncryptedWrite()` - Write encrypted data
+- `useEncryptedInput()` - Manage input builder
+- `useEncryptedEvent()` - Watch encrypted events
+
+#### 5. Adapters Module (`adapters.ts`)
+
+Framework-specific integrations:
+
+```typescript
+// Vue.js Adapter
+import { VueAdapter } from '@fhevm/sdk/adapters';
+const vueAdapter = new VueAdapter(config);
+const client = vueAdapter.getClient();
+
+// Next.js Adapter (SSR-safe)
+import { NextAdapter } from '@fhevm/sdk/adapters';
+const nextAdapter = new NextAdapter(config);
+const client = await nextAdapter.initializeClient();
+
+// Node.js Adapter
+import { createNodeAdapter } from '@fhevm/sdk/adapters';
+const nodeAdapter = await createNodeAdapter(config);
+const encrypted = await nodeAdapter.prepareEncryptedInput(value, contractAddress, userAddress);
+
+// Universal Provider (framework-agnostic)
+import { createUniversalProvider } from '@fhevm/sdk/adapters';
+const provider = createUniversalProvider();
+await provider.initialize(config);
+```
+
+**Adapter Classes**:
+- `VueAdapter` - Vue 3 Composition API integration
+- `NextAdapter` - Next.js SSR-safe integration
+- `NodeAdapter` - Node.js backend integration
+- `UniversalProvider` - Framework-agnostic pattern
+
+#### 6. Utils Module (`utils.ts`)
+
+40+ helper functions for common operations:
+
+```typescript
+import {
+  formatHandle,
+  shortenAddress,
+  isValidAddress,
+  retry,
+  debounce,
+  formatEther,
+  parseEther,
+  isEncryptedHandle,
+  // ... and more
+} from '@fhevm/sdk';
+
+// Format display
+const short = shortenAddress('0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb');
+// "0x742d...bEb"
+
+// Retry with backoff
+const result = await retry(async () => {
+  return await fetchData();
+}, { maxRetries: 3, baseDelay: 1000 });
+```
+
+**Utility Categories**:
+- Address formatting and validation
+- Handle formatting
+- BigInt/Number conversion
+- Retry and delay helpers
+- Debounce/throttle functions
+- Network helpers
+- Gas formatting
+
+#### 7. Types Module (`types.ts`)
+
+Comprehensive TypeScript definitions:
+
+```typescript
+import type {
+  FHEVMConfig,
+  EncryptedInput,
+  DecryptionResult,
+  ContractInstance,
+  Provider,
+  EncryptionOptions,
+  DecryptionOptions,
+  HookConfig,
+  TransactionOptions
+} from '@fhevm/sdk';
+```
+
+## 🎯 Design Principles
+
+1. **Simplicity** - Minimal boilerplate, maximum productivity
+2. **Consistency** - Same API across all frameworks
+3. **Flexibility** - Use as much or as little as needed
+4. **Type Safety** - Full TypeScript support
+5. **Documentation** - Clear examples and API docs
+
+## 📊 Evaluation Criteria Coverage
+
+### ✅ Usability
+
+- **< 10 lines to start**: Demonstrated in Quick Start
+- **Minimal boilerplate**: No complex setup required
+- **Familiar API**: Wagmi-like hooks and patterns
+- **Clear errors**: Helpful error messages
+
+### ✅ Completeness
+
+- **Initialization**: `createFHEVMClient` with full config
+- **Encryption**: Multiple methods (simple, builder, typed)
+- **Decryption**: User decrypt (EIP-712) + public decrypt
+- **Contract Integration**: Full ethers.js compatibility
+- **Event Handling**: Encrypted event watching
+
+### ✅ Reusability
+
+- **Core module**: Framework-agnostic base
+- **Adapters**: Clean separation for each framework
+- **Hooks**: Modular React integration
+- **Utils**: Reusable helper functions (40+)
+- **Types**: Shared TypeScript definitions
+
+### ✅ Documentation
+
+- **SDK README**: Complete API reference
+- **Example README**: Step-by-step guide
+- **Code Comments**: Inline documentation
+- **Setup Guide**: Comprehensive instructions
+- **This README**: Full overview
+
+### ✅ Creativity
+
+- **Multi-framework support**: React, Vue, Next.js, Node.js adapters
+- **Real use case**: Art investment platform
+- **Advanced patterns**: Builder API, Smart decrypt
+- **Best practices**: TypeScript, error handling, SSR-safe
+
+## 📚 Documentation
+
+### Complete Documentation Files
+
+1. **[README.md](./README.md)** - This file (project overview)
+2. **[packages/fhevm-sdk/README.md](./packages/fhevm-sdk/README.md)** - SDK API reference
+3. **[examples/nextjs-art-investment/README.md](./examples/nextjs-art-investment/README.md)** - Next.js example guide
+4. **[SETUP.md](./SETUP.md)** - Complete setup instructions
+5. **[SUBMISSION.md](./SUBMISSION.md)** - Competition submission details
+6. **[demo.md](./demo.md)** - Video demonstration guide
+
+### Quick Links
+
+- [SDK API Documentation](./packages/fhevm-sdk/README.md)
+- [Next.js Example Setup](./examples/nextjs-art-investment/README.md)
+- [Installation Guide](./SETUP.md)
+- [Submission Details](./SUBMISSION.md)
+
+## 🚀 Development
+
+### Install All Dependencies
+
+```bash
+npm install
+```
+
+### Build SDK
+
+```bash
+npm run build:sdk
+# or
+cd packages/fhevm-sdk && npm run build
+```
+
+### Run Next.js Example
+
+```bash
+npm run dev:nextjs
+# or
+cd examples/nextjs-art-investment && npm run dev
+```
+
+### Compile Smart Contracts
+
+```bash
+npm run compile:contracts
+# or
+cd examples/nextjs-art-investment && npm run compile
+```
+
+### Run Tests
+
+```bash
+npm test
+# or
+cd packages/fhevm-sdk && npm test
+```
+
+## 🌟 Key Innovations
+
+1. **Universal Provider Pattern**: Single interface for all frameworks
+2. **Smart Decryption**: Automatic fallback between user/public decrypt
+3. **Fluent Builder API**: Chainable encryption input builder
+4. **SSR-Safe Adapters**: Next.js compatibility out of the box
+5. **Type-Safe Hooks**: Full TypeScript support for React
+6. **Comprehensive Utils**: 40+ helper functions for common tasks
+7. **Modular Design**: Import only what you need
+
+## 📹 Video Demonstration
+
+A complete walkthrough video demonstrating:
+
+1. SDK installation and setup (< 10 lines)
+2. Architecture overview
+3. Next.js example walkthrough
+4. Multi-framework support
+5. Design decisions and best practices
+
+**Video Guide**: [demo.md](./demo.md)
+
+**Video File**: Download and watch `demo.mp4` from the repository. The video covers:
+- Platform overview and features
+- SDK installation process
+- Next.js example demonstration
+- React, Vue, and Node.js examples
+- Technical architecture explanation
+- Best practices and design patterns
+
+*Note: The demo video must be downloaded to watch - direct links will not work.*
+
+## 🔗 Deployed Examples
+
+- **Next.js Art Investment**: [https://fhe-art-investment.vercel.app/](https://fhe-art-investment.vercel.app/)
+- **GitHub Repository**: [https://github.com/GustHomenick/fhevm-react-template](https://github.com/GustHomenick/fhevm-react-template)
+
+## 🤝 Contributing
+
+This is a competition submission. Feedback and suggestions are welcome!
 
 ## 📄 License
 
-This project is licensed under the **BSD-3-Clause-Clear License**. See the [LICENSE](LICENSE) file for details.
+MIT License - see [LICENSE](./LICENSE) file for details
+
+## 🙏 Acknowledgments
+
+- Built for the Zama FHEVM Bounty Program
+- Based on official FHEVM documentation and SDK
+- Inspired by wagmi's developer experience
+- Smart contract example demonstrates real-world privacy use case
+
+## 📞 Support
+
+For issues or questions:
+
+1. Check the [Setup Guide](./SETUP.md)
+2. Review [SDK Documentation](./packages/fhevm-sdk/README.md)
+3. See [Example README](./examples/nextjs-art-investment/README.md)
+4. Review [Submission Details](./SUBMISSION.md)
+
+---
+
+**Built with ❤️ for confidential computing**
+
+**Project Status**: ✅ Complete and Ready for Submission
+**Submission Date**: October 2025
+**Version**: 1.0.0
+
+*Powered by Zama FHEVM • Example deployed on Vercel*
