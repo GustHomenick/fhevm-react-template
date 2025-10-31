@@ -81,13 +81,44 @@ fhevm-react-template/
 │   │   │   ├── layout.tsx      # Root layout
 │   │   │   ├── page.tsx        # Main page
 │   │   │   ├── providers.tsx   # Wagmi providers
-│   │   │   └── globals.css     # Global styles
+│   │   │   ├── globals.css     # Global styles
+│   │   │   └── api/            # API Routes
+│   │   │       ├── fhe/        # FHE Operations
+│   │   │       │   ├── route.ts         # Main FHE route
+│   │   │       │   ├── encrypt/route.ts # Encryption endpoint
+│   │   │       │   ├── decrypt/route.ts # Decryption endpoint
+│   │   │       │   └── compute/route.ts # Computation endpoint
+│   │   │       └── keys/route.ts        # Key management
 │   │   ├── components/         # React components
+│   │   │   ├── ui/             # Base UI components
+│   │   │   │   ├── Button.tsx
+│   │   │   │   ├── Input.tsx
+│   │   │   │   └── Card.tsx
+│   │   │   ├── fhe/            # FHE components
+│   │   │   │   ├── FHEProvider.tsx      # FHE context provider
+│   │   │   │   ├── EncryptionDemo.tsx   # Encryption demo
+│   │   │   │   ├── ComputationDemo.tsx  # Computation demo
+│   │   │   │   └── KeyManager.tsx       # Key management
 │   │   │   ├── ArtworkList.tsx
 │   │   │   ├── InvestmentForm.tsx
 │   │   │   └── Portfolio.tsx
 │   │   ├── lib/                # Utilities
+│   │   │   ├── fhe/            # FHE integration
+│   │   │   │   ├── client.ts   # Client operations
+│   │   │   │   ├── server.ts   # Server operations
+│   │   │   │   ├── keys.ts     # Key management
+│   │   │   │   └── types.ts    # FHE types
+│   │   │   ├── utils/          # Utility functions
+│   │   │   │   ├── security.ts # Security utilities
+│   │   │   │   └── validation.ts # Validation helpers
 │   │   │   └── contract.ts     # Contract ABI & address
+│   │   ├── hooks/              # Custom React hooks
+│   │   │   ├── useFHE.ts       # Main FHE hook
+│   │   │   ├── useEncryption.ts # Encryption hook
+│   │   │   └── useComputation.ts # Computation hook
+│   │   ├── types/              # TypeScript types
+│   │   │   ├── fhe.ts          # FHE types
+│   │   │   └── api.ts          # API types
 │   │   ├── contracts/          # Smart contracts
 │   │   │   └── PrivateArtInvestment.sol
 │   │   ├── hardhat.config.js
@@ -112,14 +143,35 @@ fhevm-react-template/
 │   │   ├── vite.config.ts
 │   │   └── package.json
 │   │
-│   └── nodejs-cli/             # 🖥️ Node.js CLI (Complete)
+│   ├── nodejs-cli/             # 🖥️ Node.js CLI (Complete)
+│   │   ├── src/
+│   │   │   ├── commands/
+│   │   │   │   ├── encrypt.ts
+│   │   │   │   ├── decrypt.ts
+│   │   │   │   ├── info.ts
+│   │   │   │   └── interactive.ts
+│   │   │   └── index.ts        # CLI entry point
+│   │   ├── tsconfig.json
+│   │   └── package.json
+│   │
+│   └── PrivateArtInvestment/   # 🎨 Private Art Investment (React + FHEVM)
 │       ├── src/
-│       │   ├── commands/
-│       │   │   ├── encrypt.ts
-│       │   │   ├── decrypt.ts
-│       │   │   ├── info.ts
-│       │   │   └── interactive.ts
-│       │   └── index.ts        # CLI entry point
+│       │   ├── App.tsx         # Main component
+│       │   ├── main.tsx        # Entry point
+│       │   ├── components/     # React components
+│       │   │   ├── Header.tsx
+│       │   │   ├── StatsDisplay.tsx
+│       │   │   ├── InvestorRegistration.tsx
+│       │   │   ├── InvestmentForm.tsx
+│       │   │   ├── ArtworkManagement.tsx
+│       │   │   └── ArtworkGallery.tsx
+│       │   ├── hooks/
+│       │   │   └── useContract.ts
+│       │   └── styles/
+│       │       └── App.css
+│       ├── contracts/          # Smart contracts
+│       │   └── PrivateArtInvestment.sol
+│       ├── vite.config.ts
 │       ├── tsconfig.json
 │       └── package.json
 │
@@ -142,8 +194,37 @@ A complete privacy-preserving art investment platform built with Next.js 14.
 - 🎨 **Private Investments**: Investment amounts encrypted with FHE
 - 🔒 **Encrypted Portfolios**: Portfolio balances remain confidential
 - 🔑 **User Decryption**: EIP-712 signed decryption for authorized users
-- ⚡ **Next.js 14**: Modern App Router architecture
+- ⚡ **Next.js 14**: Modern App Router architecture with API routes
 - 🎯 **FHEVM SDK Integration**: Complete SDK usage demonstration
+- 🛠️ **Complete FHE Stack**: Includes encryption, decryption, and computation APIs
+- 🎨 **UI Components**: Reusable components for FHE operations
+- 🔧 **Custom Hooks**: React hooks for seamless FHE integration
+- 📦 **Type-Safe**: Full TypeScript support with comprehensive types
+
+### Architecture Overview
+
+The Next.js example includes a complete implementation following the structure outlined in the project requirements:
+
+**API Routes** (`app/api/`):
+- `/api/fhe/encrypt` - Encryption endpoint
+- `/api/fhe/decrypt` - Decryption endpoint with EIP-712 support
+- `/api/fhe/compute` - Homomorphic computation operations
+- `/api/keys` - Key management and retrieval
+
+**Components** (`components/`):
+- **UI Components**: Button, Input, Card for consistent styling
+- **FHE Components**: FHEProvider, EncryptionDemo, ComputationDemo, KeyManager
+- **Business Logic**: ArtworkList, InvestmentForm, Portfolio
+
+**Custom Hooks** (`hooks/`):
+- `useFHE` - Main FHEVM client hook
+- `useEncryption` - Encryption operations hook
+- `useComputation` - Computation operations hook
+
+**Library Utilities** (`lib/`):
+- **FHE Integration**: Client/server operations, key management
+- **Security**: Input validation and security utilities
+- **Types**: Comprehensive TypeScript definitions
 
 ### Run the Example
 
@@ -253,6 +334,51 @@ fhevm-cli decrypt --handle 0x... --contract 0x... --private-key 0x...
 
 # Show network info
 fhevm-cli info
+```
+
+## 🎨 Private Art Investment Example
+
+React application for privacy-preserving art investments with FHEVM SDK.
+
+**Location**: `examples/PrivateArtInvestment/`
+
+### Features
+
+- 🎨 **Art Platform**: Complete art investment platform
+- 🔒 **Private Investments**: Encrypted investment amounts with FHE
+- 🎭 **Artwork Management**: List and manage artworks on-chain
+- 💼 **Investor Portal**: Register and track investments
+- 📊 **Live Statistics**: Platform-wide stats and analytics
+- ⚛️ **Modern React**: React 18 with TypeScript and Vite
+- 🎯 **FHEVM SDK Integration**: Full SDK usage with hooks
+- 🔗 **Wallet Connection**: ConnectKit for seamless wallet integration
+
+### Run the Example
+
+```bash
+cd examples/PrivateArtInvestment
+npm install
+npm run dev
+```
+
+Visit `http://localhost:3002`
+
+### Smart Contract
+
+The example includes the **PrivateArtInvestment** smart contract:
+
+- Private investment tracking
+- Artwork listing and management
+- Investor registration
+- Returns distribution
+- Full Hardhat development environment
+
+### Deploy Contract
+
+```bash
+cd examples/PrivateArtInvestment
+npm run compile
+npm run deploy
 ```
 
 ## 🛠️ SDK Architecture
